@@ -30,6 +30,7 @@ export async function authRoutes(fastify: FastifyInstance) {
     const authUrl = `${SPOTIFY_AUTH_URL_AUTHORIZE}?client_id=${SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
       SPOTIFY_REDIRECT_URI
     )}&scope=${encodeURIComponent(SCOPES)}&state=${state}`;
+    fastify.log.info("Redirecting to Spotify Auth URL");
     reply.redirect(authUrl);
   });
 
@@ -49,12 +50,58 @@ export async function authRoutes(fastify: FastifyInstance) {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
-      const { access_token, refresh_token } = response.data;
+      const { access_token, refresh_token, expires_in } = response.data;
       // Store tokens in session or database as needed
-      reply.send({ access_token, refresh_token } as authApiResponse);
+
+      const html_response = `
+      <html>
+        <head>
+          <script>
+            window.opener.postMessage({
+              type: 'spotify-auth-success',
+              payload: {
+                access_token: '${access_token}',
+                refresh_token: '${refresh_token}',
+                expires_in: ${expires_in},
+              },
+            }, '*');
+            window.close();
+          </script>
+        </head>
+        <body>Authentication successful! You can close this window.</body>
+      </html>
+    `;
+
+      fastify.log.info("Spotify authentication successful");
+      reply.type("text/html").send(html_response);
     } catch (error) {
-      console.error("Error during Spotify authentication:", error);
+      fastify.log.error("Error during Spotify authentication:", error);
       reply.status(500).send("Authentication failed");
+    }
+  });
+
+  // 3. Refresh Access Token
+  fastify.post("/refresh", async (request, reply) => {
+    const { refresh_token } = request.body as { refresh_token: string };
+
+    try {
+      const response = await axios.post(SPOTIFY_AUTH_URL, null, {
+        params: {
+          grant_type: "refresh_token",
+          refresh_token,
+          client_id: SPOTIFY_CLIENT_ID,
+          client_secret: SPOTIFY_CLIENT_SECRET,
+        },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      const { access_token, expires_in } = response.data;
+      reply.send({ access_token, expires_in });
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      reply.status(500).send({ error: "Token refresh failed" });
     }
   });
 }

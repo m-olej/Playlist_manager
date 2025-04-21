@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Row } from "react-bootstrap";
+import SpotifyLogin from "./SpotifyLogin";
 
 interface SelectorProps {
   playlist: string | number;
@@ -12,49 +12,38 @@ interface Playlist {
 }
 
 const Selector: React.FC<SelectorProps> = ({ playlist, changePlaylist }) => {
-  // const [playlists, setPlaylists] = useState<Playlist[]>([
-  //   { id: "", name: "" },
-  // ]);
+  const playlists: Playlist[] = [
+    { id: "1", name: "Playlist 1" },
+    { id: "2", name: "Playlist 2" },
+    { id: "3", name: "Playlist 3" },
+  ];
 
-  // useEffect(() => {
-  //   const fetchPlaylists = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `https://api.spotify.com/v1/me/playlists`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${import.meta.env.VITE_SPOTIFY_API_KEY}`,
-  //           },
-  //         }
-  //       );
-  //       const data = await response.json();
-  //       setPlaylists(data.items);
-  //     } catch (error) {
-  //       console.error("Error fetching playlists:", error);
-  //     }
-  //   };
-
-  //   fetchPlaylists();
-  // }, []);
+  console.log(localStorage.getItem("AccessToken"));
 
   return (
     <Row className="mb-4">
       <h1 className="text-center mb-4">Playlist Manager</h1>
-      <label htmlFor="playlist" className="form-label">
-        Select Playlist:
-      </label>
-      {/* <select
-        id="playlist"
-        className="form-select"
-        value={playlist}
-        onChange={(e) => changePlaylist(e.target.value)}
-      >
-        {playlists.map((playlist) => (
-          <option key={playlist.id} value={playlist.id}>
-            {playlist.name}
-          </option>
-        ))}
-      </select> */}
+      {!localStorage.getItem("AccessToken") ? (
+        <SpotifyLogin />
+      ) : (
+        <div>
+          <label htmlFor="playlist" className="form-label">
+            Select Playlist:
+          </label>
+          <select
+            id="playlist"
+            className="form-select"
+            value={playlist}
+            onChange={(e) => changePlaylist(e.target.value)}
+          >
+            {playlists.map((playlist) => (
+              <option key={playlist.id} value={playlist.id}>
+                {playlist.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </Row>
   );
 };

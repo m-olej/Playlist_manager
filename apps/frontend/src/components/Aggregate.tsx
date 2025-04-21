@@ -1,6 +1,6 @@
 import { Row, Col, Form, Button } from "react-bootstrap";
 import { useState, ChangeEvent } from "react";
-import { ItemAttributes } from "./Item";
+import { ItemAttributes } from "@shared/types";
 
 interface AggregateProps {
   addItem: (item: ItemAttributes) => void;

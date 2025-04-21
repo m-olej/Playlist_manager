@@ -3,7 +3,19 @@ import cors from "@fastify/cors";
 import { ItemType } from "@shared/types";
 import { authRoutes } from "./auth";
 
-const server = Fastify();
+const server = Fastify({
+  logger: {
+    level: "debug",
+    transport: {
+      target: "pino-pretty",
+      options: {
+        colorize: true,
+        translateTime: "SYS:standard",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+});
 
 const start = async () => {
   await server.register(cors, {
@@ -14,7 +26,7 @@ const start = async () => {
 
   try {
     await server.listen({ port: 3123 });
-    console.log("🚀 Fastify server running on http://localhost:3123");
+    server.log.info("🚀 Fastify server running on http://localhost:3123");
   } catch (err) {
     server.log.error(err);
     process.exit(1);

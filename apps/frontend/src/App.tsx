@@ -1,10 +1,8 @@
 // React + styling
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Selector, Item, Aggregate, Filter } from "./components";
 import { Container, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-// Services
-import { authorize } from "./services/SpotifyApi";
 // Types
 import { ItemType, ItemAttributes } from "@shared/types";
 
@@ -19,23 +17,6 @@ const initialItems: ItemType[] = [
 ];
 
 export default function App() {
-  // Authorize spotify access only on first render
-  useEffect(() => {
-    const authorizeSpotify = async () => {
-      try {
-        const res = await authorize();
-        return res.json();
-      } catch (error) {
-        console.error("Error authorizing Spotify:", error);
-      }
-    };
-
-    // Set Access Token and Refresh Token in local storage
-    authorizeSpotify();
-    localStorage.setItem("access_token", res.access_token);
-    localStorage.setItem("refresh_token", res.refresh_token);
-  }, []);
-
   // Global state
   const [playlist, setPlaylist] = useState<string | number>("");
   const [items, setItems] = useState<ItemType[]>(initialItems);
