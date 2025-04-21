@@ -1,0 +1,17 @@
+{
+  "name": "playlist-manager",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n frontend,backend -c green,blue \"pnpm --filter frontend dev\" \"pnpm --filter backend dev\""
+  },
+  "packageManager": "pnpm@10.8.1",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
