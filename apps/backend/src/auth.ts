@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { authApiResponse } from "@shared/types";
 import axios from "axios";
 import { config } from "dotenv";
 
@@ -50,7 +51,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       });
       const { access_token, refresh_token } = response.data;
       // Store tokens in session or database as needed
-      reply.send({ access_token, refresh_token });
+      reply.send({ access_token, refresh_token } as authApiResponse);
     } catch (error) {
       console.error("Error during Spotify authentication:", error);
       reply.status(500).send("Authentication failed");

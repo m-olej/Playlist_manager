@@ -1,19 +1,6 @@
 import { Col, Card, Button, Form } from "react-bootstrap";
 import { ChangeEvent } from "react";
-
-export interface ItemAttributes {
-  name: string;
-  description: string;
-  image: string;
-  rating: number;
-}
-
-export interface ItemProps {
-  id: number;
-  attributes: ItemAttributes;
-  updateRating: (id: number, rating: number) => void;
-  deleteItems: (id: number) => void;
-}
+import { ItemProps } from "@shared/types";
 
 export const Item: React.FC<ItemProps> = ({
   id,

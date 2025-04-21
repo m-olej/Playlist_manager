@@ -1,14 +1,7 @@
-export async function authorize() {
-  const queryParams = new URLSearchParams({
-    client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-    response_type: "code",
-    redirect_uri: import.meta.env.VITE_SPOTIFY_REDIRECT_URI,
-    scope:
-      "playlist-read-private playlist-modify-private playlist-modify-public user-library-read user-recently-played user-top-read",
-  });
-  const res = await fetch(
-    "https://accounts.spotify.com/authorize?" + queryParams
-  );
+import { authApiResponse } from "@shared/types";
+
+export async function authorize(): Promise<authApiResponse> {
+  const res = await fetch("http://localhost:3123/auth/login");
   if (res.status === 200) {
     const data = await res.json();
     return data;
