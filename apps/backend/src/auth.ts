@@ -4,10 +4,12 @@ import { config } from "dotenv";
 
 config();
 
-const { SPOTIFY_REDIRECT_URI, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } =
-  process.env;
+const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI || "";
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID || "";
+const SPOTIFY_CLIENT_SECRET = encodeURIComponent(
+  process.env.SPOTIFY_CLIENT_SECRET || ""
+);
 
-const SPOTIFY_API_URL = "https://api.spotify.com/v1";
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/api/token";
 const SPOTIFY_AUTH_URL_AUTHORIZE = "https://accounts.spotify.com/authorize";
 
@@ -16,16 +18,17 @@ const SCOPES = [
   "playlist-modify-private",
   "playlist-modify-public",
   "user-library-read",
-  "user-recently-played",
+  "user-read-recently-played",
   "user-top-read",
 ].join(" ");
 
 export async function authRoutes(fastify: FastifyInstance) {
   // 1. Redirect to Spotify Auth
   fastify.get("/login", async (request, reply) => {
-    const authUrl = `${SPOTIFY_AUTH_URL_AUTHORIZE}?client_id=${SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${SPOTIFY_REDIRECT_URI}&scope=${encodeURIComponent(
-      SCOPES
-    )}`;
+    const state = Math.random().toString(36).substring(2, 15); // Generate a random state string
+    const authUrl = `${SPOTIFY_AUTH_URL_AUTHORIZE}?client_id=${SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
+      SPOTIFY_REDIRECT_URI
+    )}&scope=${encodeURIComponent(SCOPES)}&state=${state}`;
     reply.redirect(authUrl);
   });
 
