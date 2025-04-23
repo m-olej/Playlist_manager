@@ -1,1 +1,7 @@
-export { authorize } from "./SpotifyApi";
+export {
+  authorize,
+  fetchPlaylists,
+  fetchPlaylistItems,
+  addTrackToPlaylist,
+  deleteTrackFromPlaylist,
+} from "./SpotifyApi";

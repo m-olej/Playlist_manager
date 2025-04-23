@@ -1,21 +1,18 @@
 import { Row, Col, Form, Button } from "react-bootstrap";
 import { useState, ChangeEvent } from "react";
-import { ItemAttributes } from "@shared/types";
+import { addedItem } from "@shared/types";
 
 interface AggregateProps {
-  addItem: (item: ItemAttributes) => void;
+  addItem: (item: addedItem) => void;
 }
 
-const defaultNewItem = { name: "", description: "", image: "", rating: 1 };
+const defaultNewItem = { uri: "URI" };
 
 const Aggregate: React.FC<AggregateProps> = ({ addItem }) => {
   // Local state for new item
-  const [newItem, setNewItem] = useState<ItemAttributes>(defaultNewItem);
+  const [newItem, setNewItem] = useState<addedItem>(defaultNewItem);
 
-  const handleNewItemChange = (
-    field: keyof ItemAttributes,
-    value: string | number
-  ) => {
+  const handleNewItemChange = (field: keyof addedItem, value: string) => {
     setNewItem({ ...newItem, [field]: value });
   };
 
@@ -25,51 +22,13 @@ const Aggregate: React.FC<AggregateProps> = ({ addItem }) => {
         <h4>Add New Item</h4>
         <Form>
           <Row>
-            <Col md>
-              <Form.Control
-                placeholder="Name"
-                value={newItem.name}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleNewItemChange("name", e.target.value)
-                }
-                className="mb-2"
-              />
-            </Col>
-            <Col md>
-              <Form.Control
-                placeholder="Description"
-                value={newItem.description}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleNewItemChange("description", e.target.value)
-                }
-                className="mb-2"
-              />
-            </Col>
-            <Col md>
-              <Form.Control
-                placeholder="Image URL"
-                value={newItem.image}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleNewItemChange("image", e.target.value)
-                }
-                className="mb-2"
-              />
-            </Col>
-            <Col md>
-              <Form.Select
-                value={newItem.rating}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  handleNewItemChange("rating", Number(e.target.value))
-                }
-                className="mb-2"
-              >
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </Form.Select>
-            </Col>
+            <Form.Control
+              value={newItem.uri}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleNewItemChange("uri", e.target.value)
+              }
+              className="mb-2"
+            />
             <Button
               onClick={(e) => {
                 e.preventDefault();

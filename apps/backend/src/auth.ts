@@ -72,7 +72,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       </html>
     `;
 
-      fastify.log.info("Spotify authentication successful");
+      fastify.log.info(`Spotify authentication successful: \n${access_token}`);
       reply.type("text/html").send(html_response);
     } catch (error) {
       fastify.log.error("Error during Spotify authentication:", error);

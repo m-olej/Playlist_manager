@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { ItemType } from "@shared/types";
 import { authRoutes } from "./auth";
+import { playlistsRoutes } from "./playlists";
 
 const server = Fastify({
   logger: {
@@ -23,6 +24,7 @@ const start = async () => {
     credentials: true,
   });
   await server.register(authRoutes, { prefix: "/auth" });
+  await server.register(playlistsRoutes, { prefix: "/api" });
 
   try {
     await server.listen({ port: 3123 });
